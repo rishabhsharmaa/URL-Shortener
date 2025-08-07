@@ -24,10 +24,16 @@ app.get('/',(req,res)=>{
 });
 
 //import URL routes
+// Any request starting with /api will be handled by urlRoutes.
 const urlRoutes = require('./routes/urls');
 
 //use the urlRoutes function for any request that starts with /
 app.use('/api',urlRoutes);
+
+
+// Any other GET request will be potentially handled by this router.
+const indexRoutes = require('./routes/index');
+app.use('/',indexRoutes);
 
 //def port where server will run on 
 const PORT = process.env.PORT || 5000;
