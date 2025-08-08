@@ -1,6 +1,9 @@
 const express = require('express');
 
+const { redirectToUrl }=require('../controllers/urlController');
+
 const router = express.Router();
+
 
 /**
  * @route   GET /:code
@@ -8,15 +11,7 @@ const router = express.Router();
  * @access  Public
  */
 
-router.get('/:code',(req,res)=>{
-    //we will use object destructing for this to capture code through req.params 
-    const {code}=req.params;
+//express will now call redirectToUrl function when route is matched
+router.get('/:code',redirectToUrl);
 
-    //status json to check if its working 
-    res.status(200).json({
-        success : true,
-        message : 'redirect route is working',
-        capturedCode : code,
-    })
-})
 module.exports = router;
