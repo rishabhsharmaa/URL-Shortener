@@ -62,7 +62,13 @@ const redirectToUrl = async (req, res) => {
 
     if (url) {
       // Redirect the user to the long URL
-      return res.redirect(url.longUrl);
+      url.clicks++;
+
+      await url.save();
+
+      return res.redirect(301,url.longUrl)
+      
+
     } else {
       return res.status(404).json({ success: false, message: 'No URL found' });
     }
