@@ -30,6 +30,9 @@ const urlRoutes = require('./routes/urls');
 //use the urlRoutes function for any request that starts with /
 app.use('/api',urlRoutes);
 
+//authRoutes to handle  authentication
+const authRoutes = require('./routes/auth');
+app.use('/api/auth',authRoutes);
 
 // Any other GET request will be potentially handled by this router.
 const indexRoutes = require('./routes/index');
