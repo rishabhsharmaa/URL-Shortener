@@ -66,6 +66,7 @@ const redirectToUrl = async (req, res) => {
 
       await url.save();
 
+      //301 status for permanent redirect
       return res.redirect(301,url.longUrl)
       
 
