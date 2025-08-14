@@ -1,19 +1,20 @@
 const express = require('express');
-
-//importing controller function
-const {shortenUrl} = require('../controllers/urlController');
-
-//creating new router obj
 const router = express.Router();
+// --- ADD THIS IMPORT ---
+// Import our newly flexible auth middleware
+const auth = require('../middleware/auth');
 
+// Import the controller function
+const { shortenUrl } = require('../controllers/urlController');
 
 /**
  * @route   POST /api/shorten
  * @desc    Create a new short URL
- * @access  Public
+ * @access  Public (but tracks user if logged in)
  */
-
-//Express will automatically invoke this function with req,res when router is matched
-router.post('/shorten',shortenUrl);
+// --- UPDATE THIS LINE ---
+// We insert the 'auth' middleware before our controller function.
+// Express will run them in sequence: first auth, then shortenUrl.
+router.post('/shorten', auth, shortenUrl);
 
 module.exports = router;

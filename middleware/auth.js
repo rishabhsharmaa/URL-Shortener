@@ -1,33 +1,34 @@
 const jwt = require('jsonwebtoken');
 
 /**
- * @desc This middleware function verifies the JWT sent by the client.
- * If the token is valid, it attaches the decoded user payload to the request object.
- * If the token is missing or invalid, it sends a 401 Unauthorized response.
+ * @desc Middleware to verify JWT from the client
+ * @usage Attach decoded user data to req.user if valid
  */
+const auth = (req, res, next) => {
+    // getting token from user using header
+    const token = req.header('x-auth-token');
 
+    //if no token given
+    if (!token) {
+        return next();
+    }
 
-const token = req.header('x-auth-token');
+    try {
+        // Verifying token
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-if(!token){
+        // attaching user to request
+        req.user = decoded.user;
 
-    return res.status(401).json({
-        success : false , 
-        message : 'no token given , authorization failed!',
-    });
+        // Continue to next midddleware
+        next();
+    } catch (err) {
+        console.error('Invalid token', err.message);
+        res.status(401).json({
+            success: false,
+            message: 'Invalid token!',
+        });
+    }
 };
 
-try{
-
-    const decode = jwt.verify(token,process.env.JWT_SECRET);
-
-    //after successsful token match , user will be granted with the data
-    req.user = decode.user;
-
-    next();
-}
-catch(err){
-    console.error('invalid token',err.message);
-    res.status(401).json({success : false , message : 'invalid token!',
-    })
-}
+module.exports = auth;
