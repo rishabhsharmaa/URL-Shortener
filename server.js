@@ -34,6 +34,10 @@ app.use('/api',urlRoutes);
 const authRoutes = require('./routes/auth');
 app.use('/api/auth',authRoutes);
 
+//handle users saved links and fetching user specific saved links
+const linksRoutes = require('./routes/links');
+app.use('/api/links',linksRoutes);
+
 // Any other GET request will be potentially handled by this router.
 const indexRoutes = require('./routes/index');
 app.use('/',indexRoutes);
