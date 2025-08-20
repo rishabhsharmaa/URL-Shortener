@@ -23,7 +23,8 @@ const HomePage = ()=>{
                 type='url'
                 placeholder='https://example.com/long/url/shorten'
                 value={longUrl}
-                onChange={(e)=>setLongUrl(e.targetl.value)}
+                //stores longUrl of user in setLongUrl 
+                onChange={(e)=>setLongUrl(e.target.value)}
                 required/>
                 
                 </div>
