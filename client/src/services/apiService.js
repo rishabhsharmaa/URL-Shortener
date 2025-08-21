@@ -9,16 +9,21 @@ import axios from 'axios';
 
 export const createShortUrl = async (longUrl)=>{
     try{
+        //sends http request to backened to shorten the longUrl through axios
         const response = await axios.post('/api/shorten',{longUrl});
 
+        //returning the shorten url
         return response.data;
     }
     catch(err){
+        
         console.error('API error , failed to create short Url!',err);
+        //mores specific way to throw error 
         if(err.response && err.response.data){
             throw err.response.data;
         }
         else{
+            //if error is of something else than it will throw this error
             throw new err('something went wrong,please try again!');
         }
     }
