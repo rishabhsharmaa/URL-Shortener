@@ -7,6 +7,7 @@ import axios from 'axios';
  *          On failure, the promise will be rejected with an error object.
  */
 
+
 export const createShortUrl = async (longUrl)=>{
     try{
         //sends http request to backened to shorten the longUrl through axios
