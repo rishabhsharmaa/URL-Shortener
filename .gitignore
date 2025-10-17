@@ -3,7 +3,7 @@
 
 #Environmental Variables
 .env 
-
+test.http
 #logs
 logs
 *.log

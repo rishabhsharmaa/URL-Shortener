@@ -1,12 +1,15 @@
 import React,{useState} from 'react';
 import { Link } from 'react-router-dom';
-
+import {registerUser} from '../services/authService';
 const RegisterPage = ()=>{
     const [formData,setFormData]=useState({
         name:'',
         email:'',
         password:''
     });
+
+    const [error, setError]=useState('');
+    const [success,setSuccess]=useState('');
     
     const handleChange=(e)=>{
         setFormData({
@@ -15,9 +18,32 @@ const RegisterPage = ()=>{
         });
     }
 
-    const handleSubmit=(e)=>{
-        e.preventDefault(),
-        console.log('register with : ',formData);
+    const handleSubmit=async (e)=>{
+        e.preventDefault()
+        setError('');
+        setSuccess('');
+        
+        if(!formData.name ||!formData.email ||!formData.password){
+            setError('All Fields are Required');
+            return;
+        }
+
+        try{
+            const response = await registerUser(formData);
+            console.log('Registration Successful:', response);
+            setSuccess('Registration Succerssful! You can login now.')
+            setFormData({
+                name:'',
+                email:'',
+                password:''
+            });
+
+        }
+        catch(err){
+            const errorMessage = err.error|| 'Registration Failed. Please try again.';
+            setError(errorMessage);
+            console.error('Registration Failed:', err);
+        }
     }
     return(
         <div className='auth-container'>
@@ -64,12 +90,15 @@ const RegisterPage = ()=>{
           
            
             </form>
+                  {error && <p className="error-message" style={{ color: 'red' }}>{error}</p>}
+                  {success && <p className='success-message' style={{ color: 'green' }}>{success}</p>}
             <p className='auth-switch'>
                 Already have an account? <Link to ='/login'>Login here</Link>
 
             </p>
         </div>
     );
+    
 };
 
 export default RegisterPage;
