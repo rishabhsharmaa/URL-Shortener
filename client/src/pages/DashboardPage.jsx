@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 
 import { getUserLinks } from '../services/linkService';
 
-
+import Spinner from '../components/spinner';
 const DashboardPage = () => {
   const [links, setLinks] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -60,7 +60,7 @@ const DashboardPage = () => {
 
       <div className="links-list-container" style={{ marginTop: '2rem' }}>
         {isLoading ? (
-          <p>Loading your links...</p>
+          <Spinner />
         ) : error ? (
           <p className="error-message" style={{ color: 'red' }}>
             Error: {error}
@@ -91,7 +91,7 @@ const DashboardPage = () => {
                   <td style={{ padding: '8px', textAlign: 'center' }}>{link.clicks}</td>
                   <td style={{ padding: '8px' }}>
                     
-                    <button className="btn btn-copy" onClick={() => handleCopy(link.shortUrl,link._id)}>
+                    <button className="btn btn-copy btn-small" onClick={() => handleCopy(link.shortUrl,link._id)}>
                       {isCopiedLink===link._id ? 'copied!':'copy'}
                     </button>
                   </td>

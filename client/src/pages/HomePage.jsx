@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { createShortUrl } from '../services/apiService';
 import { useAuth } from '../context/AuthContext';
-
+import Spinner from '../components/spinner';
 const HomePage = () => {
   const [longUrl, setLongUrl] = useState('');
   const [shortUrlData, setShortUrlData] = useState(null);
   const [error, setError] = useState('');
   const { token } = useAuth();
   const [isCopy , setIsCopy]=useState(false);
+  const [isLoading,setIsLoading]=useState(false);
   const handleCopy = async()=>{
     if(!shortUrlData){
         return;
@@ -25,6 +26,7 @@ const HomePage = () => {
       alert("failed to copy to clipboard");
     }
   }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -33,16 +35,19 @@ const HomePage = () => {
       setShortUrlData(null);
       return;
     }
-
+    setIsLoading(true);
     try {
       setError('');
       const response = await createShortUrl(longUrl, token);
       setShortUrlData(response.data);
+
     } catch (err) {
       const errorMessage = err.error || 'An unexpected error occurred.';
       setError(errorMessage);
       setShortUrlData(null);
       console.error('Error from API:', err);
+    }finally{
+      setIsLoading(false);
     }
   };
 
@@ -63,7 +68,9 @@ const HomePage = () => {
             required
           />
         </div>
-        <button type="submit">Shorten</button>
+        <button type="submit" disabled={isLoading}>
+          {isLoading ? <Spinner size = 'small'/> : 'Shorten'}
+        </button>
       </form>
       
       {error && (
