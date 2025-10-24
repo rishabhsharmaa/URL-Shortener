@@ -5,10 +5,17 @@ const jwt = require('jsonwebtoken');
  * @usage Attach decoded user data to req.user if valid
  */
 const auth = (req, res, next) => {
-    // getting token from user using header
-    const token = req.header('x-auth-token');
+    // Support token in either custom header 'x-auth-token' or standard 'Authorization: Bearer <token>'
+    let token = req.header('x-auth-token');
 
-    //if no token given
+    if (!token) {
+        const authHeader = req.header('Authorization') || req.header('authorization');
+        if (authHeader && authHeader.startsWith('Bearer ')) {
+            token = authHeader.split(' ')[1].trim();
+        }
+    }
+
+    // If still no token, proceed without attaching user (some routes may allow anonymous access)
     if (!token) {
         return next();
     }
@@ -20,7 +27,7 @@ const auth = (req, res, next) => {
         // attaching user to request
         req.user = decoded.user;
 
-        // Continue to next midddleware
+        // Continue to next middleware
         next();
     } catch (err) {
         console.error('Invalid token', err.message);

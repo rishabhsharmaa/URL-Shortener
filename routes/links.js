@@ -1,18 +1,10 @@
 const express = require('express');
-
 const router = express.Router();
-
 const auth = require('../middleware/auth');
+const { getMyLinks } = require('../controllers/linksController');
 
-/**
- * @route   GET /api/links/my-links
- * @desc    Get all links created by the logged-in user
- * @access  Private (will be protected in the next task)
- */
-
-const {getMyLinks}=require('../controllers/linksController');
-
-
-router.get('/my-links',auth,getMyLinks);
+// Route for fetching user’s links
+// Full URL: GET /api/links/my-links
+router.get('/my-links', auth, getMyLinks);
 
 module.exports = router;

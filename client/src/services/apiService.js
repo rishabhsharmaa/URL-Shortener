@@ -8,24 +8,28 @@ import axios from 'axios';
  */
 
 
-export const createShortUrl = async (longUrl)=>{
-    try{
-        //sends http request to backened to shorten the longUrl through axios
-        const response = await axios.post('/api/shorten',{longUrl});
-
-        //returning the shorten url
-        return response.data;
-    }
-    catch(err){
-        
-        console.error('API error , failed to create short Url!',err);
-        //mores specific way to throw error 
-        if(err.response && err.response.data){
-            throw err.response.data;
+export const createShortUrl = async (longUrl, token = null) => {
+    try {
+        const config = {};
+        if (token) {
+            config.headers = {
+                Authorization: `Bearer ${token}`,
+            };
         }
-        else{
-            //if error is of something else than it will throw this error
-            throw new err('something went wrong,please try again!');
+
+        // sends http request to backend to shorten the longUrl through axios
+        const response = await axios.post('/api/shorten', { longUrl }, config);
+
+        // returning the shortened url
+        return response.data;
+    } catch (err) {
+        console.error('API error, failed to create short Url!', err);
+        // more specific way to throw error
+        if (err.response && err.response.data) {
+            throw err.response.data;
+        } else {
+            // if error is of something else then throw this error
+            throw new Error('Something went wrong, please try again!');
         }
     }
 };

@@ -1,12 +1,30 @@
 import React, { useState } from 'react';
 import { createShortUrl } from '../services/apiService';
+import { useAuth } from '../context/AuthContext';
 
 const HomePage = () => {
   const [longUrl, setLongUrl] = useState('');
   const [shortUrlData, setShortUrlData] = useState(null);
   const [error, setError] = useState('');
+  const { token } = useAuth();
+  const [isCopy , setIsCopy]=useState(false);
+  const handleCopy = async()=>{
+    if(!shortUrlData){
+        return;
+      }
+    try{ 
+      await navigator.clipboard.writeText(shortUrlData.shortUrl);
+      setIsCopy(true);
 
-
+      setTimeout(()=>{
+        setIsCopy(false);
+      },2000);
+    }
+    catch(err){
+      console.error('copy to clipboard failed',err);
+      alert("failed to copy to clipboard");
+    }
+  }
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -18,7 +36,7 @@ const HomePage = () => {
 
     try {
       setError('');
-      const response = await createShortUrl(longUrl);
+      const response = await createShortUrl(longUrl, token);
       setShortUrlData(response.data);
     } catch (err) {
       const errorMessage = err.error || 'An unexpected error occurred.';
@@ -57,9 +75,11 @@ const HomePage = () => {
       {shortUrlData && (
         <div className="result-container" style={{ marginTop: '1rem', border: '1px solid #ccc', padding: '1rem', borderRadius: '5px' }}>
           <h3>Your Short URL is ready!</h3>
-          <p>
-            <strong>Short Link:</strong> 
-            
+         
+            <div className = "short-url-display" style={{ display: 'flex', alignItems: 'center' , gap:'10px' }}>
+             <p>
+            <strong>Short Link :</strong>
+            </p>
             <a 
               href={shortUrlData.shortUrl} 
               target="_blank" 
@@ -68,7 +88,10 @@ const HomePage = () => {
             >
               {shortUrlData.shortUrl}
             </a>
-          </p>
+            <button type="button" className='btn btn-copy' onClick={handleCopy}>
+              {isCopy ? "Copied!":"copy"}
+            </button>
+          </div>
           <p style={{ fontSize: '0.8rem', color: '#555' }}>
             Original URL: {shortUrlData.longUrl.substring(0, 70)}...
           </p>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link ,useNavigate} from 'react-router-dom';
 
-
+import { useAuth } from '../context/AuthContext';
 import { loginUser } from '../services/authService';
 
 const LoginPage = () => {
@@ -20,7 +20,7 @@ const LoginPage = () => {
     });
   };
 
-
+const {login} = useAuth();
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -35,9 +35,11 @@ const LoginPage = () => {
       const response = await loginUser(formData);
       
         if(response.token){
-            localStorage.setItem('token',response.token);
+            login(response.token);
+            localStorage.setItem('token', response.token);
+
             console.log('Token Stored  in localStorage');
-            navigate('/navigate');
+            navigate('/dashboard');
         }
         else{
             setError('Login successful but no token recieved.');

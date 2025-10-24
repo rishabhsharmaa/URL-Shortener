@@ -1,6 +1,7 @@
 //import .env
 require('dotenv').config();
 
+const cors = require('cors');
 //importing connectdb
 const connectDB = require('./config/db.js');
 
@@ -16,6 +17,14 @@ const app = express();
 
 //allowing the use of express.json
 app.use(express.json());
+
+// Allow CORS for frontend
+app.use(cors({
+  origin: 'http://localhost:5173', // Vite's default port for React
+  credentials: true
+}));
+
+
 
 //to check whether the server is working correctly
 //when a get request is made to the root , we'll send a response
@@ -33,6 +42,7 @@ app.use('/api',urlRoutes);
 //authRoutes to handle  authentication
 const authRoutes = require('./routes/auth');
 app.use('/api/auth',authRoutes);
+
 
 //handle users saved links and fetching user specific saved links
 const linksRoutes = require('./routes/links');
