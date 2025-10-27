@@ -54,45 +54,47 @@ const DashboardPage = () => {
   };
 
   return (
-    <div className="dashboard-container">
-      <h2>My Dashboard</h2>
-      <p>Welcome! Here are all the links you have created.</p>
-
-      <div className="links-list-container" style={{ marginTop: '2rem' }}>
+    <div className="max-w-5xl mx-auto">
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-3xl font-bold">My Dashboard</h2>
+        <button onClick={handleLogout} className="bg-slate-200 hover:bg-slate-300 px-4 py-2 rounded-md font-semibold">
+          Logout
+        </button>
+      </div>
+      
+      
+      <div className="bg-white rounded-lg shadow-lg overflow-hidden">
         {isLoading ? (
-          <Spinner />
+          <div className="p-12 flex justify-center"><Spinner /></div>
         ) : error ? (
-          <p className="error-message" style={{ color: 'red' }}>
-            Error: {error}
-          </p>
+          <p className="p-6 text-red-500">Error: {error}</p>
         ) : links.length > 0 ? (
-          <table className="links-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
-            <thead>
-              <tr style={{ borderBottom: '2px solid #333' }}>
-                <th style={{ padding: '8px', textAlign: 'left' }}>Original URL</th>
-                <th style={{ padding: '8px', textAlign: 'left' }}>Short URL</th>
-                <th style={{ padding: '8px', textAlign: 'left' }}>Clicks</th>
-                <th style={{ padding: '8px', textAlign: 'left' }}>Action</th> 
+          <table className="w-full text-left">
+            <thead className="bg-slate-50 border-b">
+              <tr>
+                <th className="p-4 font-semibold">Original URL</th>
+                <th className="p-4 font-semibold">Short URL</th>
+                <th className="p-4 font-semibold text-center">Clicks</th>
+                <th className="p-4 font-semibold">Actions</th>
               </tr>
             </thead>
             <tbody>
               {links.map((link) => (
-                <tr key={link._id} style={{ borderBottom: '1px solid #ddd' }}>
-                  <td style={{ padding: '8px', wordBreak: 'break-all' }}>
-                    <a href={link.longUrl} title={link.longUrl} target="_blank" rel="noopener noreferrer">
-                      {link.longUrl.substring(0, 50)}...
+                <tr key={link._id} className="border-b last:border-0 hover:bg-slate-50">
+                  <td className="p-4 max-w-xs truncate">
+                    <a href={link.longUrl} title={link.longUrl} target="_blank" rel="noopener noreferrer" className="hover:underline">
+                      {link.longUrl}
                     </a>
                   </td>
-                  <td style={{ padding: '8px' }}>
-                    <a href={link.shortUrl} target="_blank" rel="noopener noreferrer">
+                  <td className="p-4">
+                    <a href={link.shortUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 font-mono hover:underline">
                       {link.shortUrl}
                     </a>
                   </td>
-                  <td style={{ padding: '8px', textAlign: 'center' }}>{link.clicks}</td>
-                  <td style={{ padding: '8px' }}>
-                    
-                    <button className="btn btn-copy btn-small" onClick={() => handleCopy(link.shortUrl,link._id)}>
-                      {isCopiedLink===link._id ? 'copied!':'copy'}
+                  <td className="p-4 text-center font-semibold">{link.clicks}</td>
+                  <td className="p-4">
+                    <button onClick={() => handleCopy(link.shortUrl, link._id)} className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 text-sm rounded-md">
+                      {isCopiedLink === link._id ? 'Copied!' : 'Copy'}
                     </button>
                   </td>
                 </tr>
@@ -100,13 +102,9 @@ const DashboardPage = () => {
             </tbody>
           </table>
         ) : (
-          <p>You haven't created any short links yet. Go to the homepage to create your first one!</p>
+          <p className="p-6 text-center text-slate-500">You haven't created any links yet.</p>
         )}
       </div>
-
-      <button onClick={handleLogout} className="btn btn-logout" style={{ marginTop: '2rem' }}>
-        Logout
-      </button>
     </div>
   );
 };
