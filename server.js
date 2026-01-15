@@ -46,9 +46,7 @@ app.listen(PORT, () => {
 
 export default app;
 
-// --- FIX 3: Vercel Export Setup ---
-// Vercel requires exporting the app, NOT listening continuously
-export default app;
+
 
 // Only listen on a port if running locally (not on Vercel)
 if (process.env.NODE_ENV !== 'production') {
