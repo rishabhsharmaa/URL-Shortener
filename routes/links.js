@@ -1,11 +1,11 @@
 import express from 'express';
+import { getLinks, createLink, deleteLink } from '../controllers/linksController.js';
 import auth from '../middleware/auth.js';
-import { getMyLinks } from '../controllers/linksController.js';
 
 const router = express.Router();
 
-// Route for fetching user's links
-// Full URL: GET /api/links/my-links
-router.get('/my-links', auth, getMyLinks);
+router.get('/', auth, getLinks);
+router.post('/', auth, createLink);
+router.delete('/:id', auth, deleteLink);
 
 export default router;

@@ -1,16 +1,14 @@
-const errorHandler = (err, req, res, next) => {
-    let statusCode = err.statusCode || res.statusCode || 500;
+const errorMiddleware = (err, req, res, next) => {
+  console.error('Error:', err);
 
-    if (err.name === 'castError' && err.kind === 'ObjectId') {
-        statusCode = 404;
-        err.message = 'Resource not found with the given id';
-    }
-    console.error(err.stack);
-    res.status(statusCode).json({
-        success: false,
-        message: err.message,
-        stack: process.env.NODE_ENV === 'production' ? undefined : err.stack,
-    });
+  const status = err.status || err.statusCode || 500;
+  const message = err.message || 'Internal Server Error';
+
+  res.status(status).json({
+    success: false,
+    message: message,
+    ...(process.env.NODE_ENV === 'development' && { stack: err.stack }),
+  });
 };
 
-export default errorHandler;
+export default errorMiddleware;

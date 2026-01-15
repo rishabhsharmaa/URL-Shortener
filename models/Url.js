@@ -1,33 +1,36 @@
 import mongoose from 'mongoose';
 
-const urlSchema = new mongoose.Schema({
-    urlCode:{
-        type:String,
-        required:true,
+const UrlSchema = new mongoose.Schema(
+  {
+    originalUrl: {
+      type: String,
+      required: true,
     },
-    longUrl:{
-        type:String,
-        required:true,
+    shortCode: {
+      type: String,
+      unique: true,
+      required: true,
+      trim: true,
     },
-    shortUrl:{
-        type:String,
-        required:true,
+    customAlias: {
+      type: String,
+      unique: true,
+      sparse: true,
+      trim: true,
     },
-    clicks:{
-        type:Number,
-        required:true,
-        default:0,
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
     },
-    date:{
-        type:Date,
-        default:Date.now,
+    clicks: {
+      type: Number,
+      default: 0,
     },
-    user : {
-        type : mongoose.Schema.ObjectId,
-        ref : 'User',
-        required : false,
-    }
-    
-});
+  },
+  {
+    timestamps: true,
+  }
+);
 
-export default mongoose.model('Url', urlSchema);
+export default mongoose.model('Url', UrlSchema);

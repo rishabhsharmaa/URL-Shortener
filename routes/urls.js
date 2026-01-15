@@ -1,14 +1,12 @@
 import express from 'express';
+import { createUrl, getUrl, getAllUrls, deleteUrl } from '../controllers/urlController.js';
 import auth from '../middleware/auth.js';
-import { shortenUrl } from '../controllers/urlController.js';
 
 const router = express.Router();
 
-/**
- * @route   POST /api/shorten
- * @desc    Create a new short URL
- * @access  Public (but tracks user if logged in)
- */
-router.post('/shorten', auth, shortenUrl);
+router.post('/', auth, createUrl);
+router.get('/:id', getUrl);
+router.get('/', auth, getAllUrls);
+router.delete('/:id', auth, deleteUrl);
 
 export default router;

@@ -1,13 +1,12 @@
 import express from 'express';
-import { redirectToUrl } from '../controllers/urlController.js';
+import authRoutes from './auth.js';
+import urlRoutes from './urls.js';
+import linksRoutes from './links.js';
 
 const router = express.Router();
 
-/**
- * @route   GET /:code
- * @desc    Redirect to the long/original URL
- * @access  Public
- */
-router.get('/:code', redirectToUrl);
+router.use('/auth', authRoutes);
+router.use('/urls', urlRoutes);
+router.use('/links', linksRoutes);
 
 export default router;

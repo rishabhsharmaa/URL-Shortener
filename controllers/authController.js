@@ -2,54 +2,102 @@ import User from '../models/User.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
-export const loginUser = async (req, res, next) => {
-    try {
-        const { email, password } = req.body;
-        if (!email || !password) {
-            return res.status(400).json({ success: false, message: 'Please provide credentials' });
-        }
-        const user = await User.findOne({ email }).select('+password');
-            if (!user) {
-                const err = new Error('Incorrect login credentials!');
-                err.statusCode = 400;
-                return next(err);
-            }
-            const isMatch = await bcrypt.compare(password, user.password);
-            if (!isMatch) {
-                const err = new Error('Invalid credentials');
-                err.statusCode = 401;
-                return next(err);
-            }
-        const payload = { user: { id: user._id } };
-        const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '30d' });
-        res.status(200).json({ success: true, token });
-    } catch (err) {
-        next(err);
+export const registerUser = async (req, res, next) => {
+  try {
+    const { email, password, name } = req.body;
+
+    // Validation
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email and password are required',
+      });
     }
+
+    // Check if user already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({
+        success: false,
+        message: 'User already exists',
+      });
+    }
+
+    // Hash password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    // Create user
+    const user = new User({
+      name: name || email.split('@')[0],
+      email,
+      password: hashedPassword,
+    });
+
+    await user.save();
+
+    // Create JWT token
+    const token = jwt.sign(
+      { user: { id: user._id } },
+      process.env.JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+
+    res.status(201).json({
+      success: true,
+      message: 'User registered successfully',
+      token,
+      user: { id: user._id, email: user.email, name: user.name },
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
-export const registerUser = async (req, res, next) => {
-    try {
-        const { name, email, password } = req.body;
-        if (!name || !email || !password) {
-            return res.status(400).json({ success: false, message: 'Please provide name, email, and password' });
-        }
-        const existingUser = await User.findOne({ email });
-        if (existingUser) {
-            return res.status(400).json({ success: false, message: 'User with the same email already exists!' });
-        }
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
-        const newUser = await User.create({ name, email, password: hashedPassword });
-        res.status(201).json({
-            success: true,
-            data: {
-                _id: newUser._id,
-                name: newUser.name,
-                email: newUser.email,
-            },
-        });
-    } catch (err) {
-        next(err);
+export const loginUser = async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+
+    // Validation
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email and password are required',
+      });
     }
+
+    // Find user
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found',
+      });
+    }
+
+    // Check password
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid credentials',
+      });
+    }
+
+    // Create JWT token
+    const token = jwt.sign(
+      { user: { id: user._id } },
+      process.env.JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+
+    res.json({
+      success: true,
+      message: 'Login successful',
+      token,
+      user: { id: user._id, email: user.email, name: user.name },
+    });
+  } catch (error) {
+    next(error);
+  }
 };

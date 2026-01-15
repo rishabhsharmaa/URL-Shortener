@@ -1,48 +1,50 @@
-import dotenv from 'dotenv';
-dotenv.config();
-
 import express from 'express';
 import cors from 'cors';
-import path from 'path';
 import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import dotenv from 'dotenv';
 import connectDB from './config/db.js';
-import urlRoutes from './routes/urls.js';
 import authRoutes from './routes/auth.js';
+import urlRoutes from './routes/urls.js';
 import linksRoutes from './routes/links.js';
-import indexRoutes from './routes/index.js';
-import errorHandler from './middleware/errorMiddleware.js';
+import errorMiddleware from './middleware/errorMiddleware.js';
+
+dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-connectDB();
+const __dirname = dirname(__filename);
 
 const app = express();
+
+// Connect to database
+connectDB();
+
+// Middleware
+app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-app.use(cors({
-  origin: [
-    'http://localhost:5173', 
-    'https://your-frontend-project.vercel.app'
-  ],
-  credentials: true
-}));
+// Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/urls', urlRoutes);
+app.use('/api/links', linksRoutes);
 
-app.get('/', (req, res) => {
-  res.send('API is running on Vercel!');
+// Health check endpoint for Vercel
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ success: true, message: 'Server is running' });
 });
 
-app.use('/api', urlRoutes);
-app.use('/api/auth', authRoutes);
-app.use('/api/links', linksRoutes);
-app.use('/', indexRoutes);
-
-app.use(errorHandler);
+// Error handling middleware (must be last)
+app.use(errorMiddleware);
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+
+// Only start server if not in Vercel environment
+if (process.env.VERCEL !== '1') {
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}
 
 export default app;
 
