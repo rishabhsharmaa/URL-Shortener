@@ -1,10 +1,11 @@
-const express = require('express');
-const router = express.Router();
-const auth = require('../middleware/auth');
-const { getMyLinks } = require('../controllers/linksController');
+import express from 'express';
+import auth from '../middleware/auth.js';
+import { getMyLinks } from '../controllers/linksController.js';
 
-// Route for fetching user’s links
+const router = express.Router();
+
+// Route for fetching user's links
 // Full URL: GET /api/links/my-links
 router.get('/my-links', auth, getMyLinks);
 
-module.exports = router;
+export default router;

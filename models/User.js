@@ -1,10 +1,9 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const userSchema = new mongoose.Schema({
     name : {
         type:String,
         required:[true,'please provide a name'],
-
     },
     email:{
         type:String,
@@ -21,9 +20,8 @@ const userSchema = new mongoose.Schema({
         minlength:6,
         select : false,
     },
-
   },
     { timestamp:true }
 );
 
-module.exports = mongoose.model('User',userSchema);
+export default mongoose.model('User', userSchema);

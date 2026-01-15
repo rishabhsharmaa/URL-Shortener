@@ -1,11 +1,11 @@
-const Url = require('../models/Url');
+import Url from '../models/Url.js';
 
 /**
  * @desc    Get all links created by the currently logged-in user.
  * @route   GET /api/links/my-links
  * @access  Private
  */
-const getMyLinks = async (req, res) => {
+export const getMyLinks = async (req, res) => {
   try {
     if (!req.user) {
       return res
@@ -25,5 +25,3 @@ const getMyLinks = async (req, res) => {
     res.status(500).json({ success: false, message: 'Internal server error' });
   }
 };
-
-module.exports = { getMyLinks };
