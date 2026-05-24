@@ -1,6 +1,7 @@
 import express from 'express';
 import { getLinks, createLink, deleteLink } from '../controllers/linksController.js';
-import auth from '../middleware/auth.js';
+import { auth } from '../middleware/auth.js';
+
 
 const router = express.Router();
 

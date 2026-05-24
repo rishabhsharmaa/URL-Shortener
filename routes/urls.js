@@ -1,6 +1,7 @@
 import express from 'express';
 import { createUrl, getUrl, getAllUrls, deleteUrl } from '../controllers/urlController.js';
-import auth from '../middleware/auth.js';
+import { auth } from '../middleware/auth.js';
+
 
 const router = express.Router();
 
