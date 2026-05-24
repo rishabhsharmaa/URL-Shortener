@@ -5,10 +5,30 @@ const generateShortCode = () => {
   return crypto.randomBytes(4).toString('hex');
 };
 
+const formatUrlResponse = (url, req) => {
+  const host = req.get('host');
+  const protocol = req.protocol;
+  const shortUrl = `${protocol}://${host}/${url.shortCode}`;
+  
+  return {
+    _id: url._id,
+    originalUrl: url.originalUrl,
+    longUrl: url.originalUrl,
+    shortCode: url.shortCode,
+    shortUrl: shortUrl,
+    customAlias: url.customAlias,
+    userId: url.userId,
+    clicks: url.clicks,
+    createdAt: url.createdAt,
+    updatedAt: url.updatedAt,
+  };
+};
+
 export const createUrl = async (req, res, next) => {
   try {
-    const { originalUrl, customAlias } = req.body;
-    const userId = req.user.id;
+    const originalUrl = req.body.originalUrl || req.body.longUrl;
+    const { customAlias } = req.body;
+    const userId = req.user?.id;
 
     // Validation
     if (!originalUrl) {
@@ -53,7 +73,7 @@ export const createUrl = async (req, res, next) => {
     res.status(201).json({
       success: true,
       message: 'URL shortened successfully',
-      data: url,
+      data: formatUrlResponse(url, req),
     });
   } catch (error) {
     next(error);
@@ -81,7 +101,7 @@ export const getUrl = async (req, res, next) => {
 
     res.json({
       success: true,
-      data: url,
+      data: formatUrlResponse(url, req),
     });
   } catch (error) {
     next(error);
@@ -90,14 +110,14 @@ export const getUrl = async (req, res, next) => {
 
 export const getAllUrls = async (req, res, next) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user?.id;
 
     const urls = await Url.find({ userId }).sort({ createdAt: -1 });
 
     res.json({
       success: true,
       count: urls.length,
-      data: urls,
+      data: urls.map(url => formatUrlResponse(url, req)),
     });
   } catch (error) {
     next(error);
@@ -107,7 +127,7 @@ export const getAllUrls = async (req, res, next) => {
 export const deleteUrl = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const userId = req.user.id;
+    const userId = req.user?.id;
 
     const url = await Url.findById(id);
 
@@ -136,14 +156,6 @@ export const deleteUrl = async (req, res, next) => {
     next(error);
   }
 };
-      await url.save();
-      return res.redirect(301, url.longUrl);
-    } else {
-      return res.status(404).json({ success: false, message: 'No URL found' });
-    }
 
-  } catch (err) {
-    console.error('Server side problem:', err);
-    res.status(500).json({ success: false, message: 'Internal server problem' });
-  }
-};
+
+

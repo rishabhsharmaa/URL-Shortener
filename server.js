@@ -8,6 +8,7 @@ import authRoutes from './routes/auth.js';
 import urlRoutes from './routes/urls.js';
 import linksRoutes from './routes/links.js';
 import errorMiddleware from './middleware/errorMiddleware.js';
+import Url from './models/Url.js';
 
 dotenv.config();
 
@@ -27,7 +28,35 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/urls', urlRoutes);
+app.use('/api/shorten', urlRoutes); // Alias for client/apiService.js compatibility
 app.use('/api/links', linksRoutes);
+
+// Root short URL redirection route
+app.get('/:shortCode', async (req, res, next) => {
+  try {
+    const { shortCode } = req.params;
+    
+    // Ignore API calls and asset requests
+    if (shortCode === 'api' || shortCode === 'favicon.ico') {
+      return next();
+    }
+
+    const url = await Url.findOne({
+      $or: [{ shortCode }, { customAlias: shortCode }],
+    });
+
+    if (url) {
+      url.clicks += 1;
+      await url.save();
+      return res.redirect(301, url.originalUrl);
+    }
+
+    return res.status(404).json({ success: false, message: 'URL not found' });
+  } catch (error) {
+    next(error);
+  }
+});
+
 
 // Health check endpoint for Vercel
 app.get('/api/health', (req, res) => {
