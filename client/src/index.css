@@ -1,4 +1,378 @@
-/* client/src/index.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ============================================
+   LINKLYTICS — Premium Design System
+   ============================================ */
+
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background-color: #020617;
+    color: #e2e8f0;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #0f172a;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #334155;
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #475569;
+  }
+}
+
+/* ============================================
+   ANIMATED MESH BACKGROUND
+   ============================================ */
+.mesh-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.mesh-bg::before,
+.mesh-bg::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.4;
+  animation: floatOrb 20s ease-in-out infinite;
+}
+
+.mesh-bg::before {
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, #4f46e5 0%, transparent 70%);
+  top: -10%;
+  left: -5%;
+  animation-delay: 0s;
+}
+
+.mesh-bg::after {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, #7c3aed 0%, transparent 70%);
+  bottom: -10%;
+  right: -5%;
+  animation-delay: -10s;
+}
+
+.mesh-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: 0.25;
+  animation: floatOrb 25s ease-in-out infinite;
+}
+
+.mesh-orb-1 {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, #c026d3 0%, transparent 70%);
+  top: 40%;
+  left: 50%;
+  animation-delay: -5s;
+}
+
+.mesh-orb-2 {
+  width: 350px;
+  height: 350px;
+  background: radial-gradient(circle, #2563eb 0%, transparent 70%);
+  top: 60%;
+  right: 30%;
+  animation-delay: -15s;
+}
+
+@keyframes floatOrb {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(50px, -30px) scale(1.1); }
+  50% { transform: translate(-20px, 50px) scale(0.95); }
+  75% { transform: translate(30px, 20px) scale(1.05); }
+}
+
+/* ============================================
+   GLASSMORPHISM CARD
+   ============================================ */
+@layer components {
+  .glass-card {
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(99, 102, 241, 0.15);
+    border-radius: 1rem;
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.03),
+      0 8px 32px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    transition: all 0.3s ease;
+  }
+
+  .glass-card:hover {
+    border-color: rgba(99, 102, 241, 0.3);
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.05),
+      0 12px 48px rgba(0, 0, 0, 0.4),
+      0 0 30px rgba(99, 102, 241, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+
+  .glass-card-light {
+    background: rgba(30, 41, 59, 0.4);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(148, 163, 184, 0.1);
+    border-radius: 0.75rem;
+  }
+
+  /* ============================================
+     GRADIENT BUTTON
+     ============================================ */
+  .btn-gradient {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+    background-size: 200% 200%;
+    color: white;
+    font-weight: 600;
+    border: none;
+    border-radius: 0.75rem;
+    padding: 0.75rem 1.5rem;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+  }
+
+  .btn-gradient:hover {
+    background-position: 100% 50%;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 25px rgba(99, 102, 241, 0.45);
+  }
+
+  .btn-gradient:active {
+    transform: translateY(0);
+  }
+
+  .btn-gradient:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
+  .btn-gradient::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.5s ease;
+  }
+
+  .btn-gradient:hover::after {
+    transform: translateX(100%);
+  }
+
+  /* ============================================
+     GHOST / SECONDARY BUTTON
+     ============================================ */
+  .btn-ghost {
+    background: rgba(99, 102, 241, 0.1);
+    color: #a5b4fc;
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    border-radius: 0.75rem;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .btn-ghost:hover {
+    background: rgba(99, 102, 241, 0.2);
+    border-color: rgba(99, 102, 241, 0.4);
+    color: #c7d2fe;
+  }
+
+  .btn-danger {
+    background: rgba(239, 68, 68, 0.1);
+    color: #fca5a5;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    border-radius: 0.75rem;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .btn-danger:hover {
+    background: rgba(239, 68, 68, 0.2);
+    border-color: rgba(239, 68, 68, 0.4);
+    color: #fecaca;
+  }
+
+  /* ============================================
+     FORM INPUT
+     ============================================ */
+  .input-glass {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    background: rgba(15, 23, 42, 0.5);
+    border: 1px solid rgba(99, 102, 241, 0.15);
+    border-radius: 0.75rem;
+    color: #e2e8f0;
+    font-size: 0.9375rem;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.3s ease;
+    outline: none;
+  }
+
+  .input-glass::placeholder {
+    color: #64748b;
+  }
+
+  .input-glass:focus {
+    border-color: #6366f1;
+    box-shadow:
+      0 0 0 3px rgba(99, 102, 241, 0.15),
+      0 0 20px rgba(99, 102, 241, 0.1);
+    background: rgba(15, 23, 42, 0.7);
+  }
+
+  /* ============================================
+     GRADIENT TEXT
+     ============================================ */
+  .text-gradient {
+    background: linear-gradient(135deg, #818cf8 0%, #a78bfa 40%, #c084fc 70%, #e879f9 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .text-gradient-brand {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* ============================================
+     STAT CARD
+     ============================================ */
+  .stat-card {
+    background: rgba(15, 23, 42, 0.5);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(99, 102, 241, 0.1);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+  }
+
+  .stat-card:hover {
+    border-color: rgba(99, 102, 241, 0.25);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+  }
+
+  /* ============================================
+     TABLE
+     ============================================ */
+  .table-row {
+    transition: all 0.2s ease;
+    border-bottom: 1px solid rgba(99, 102, 241, 0.06);
+  }
+
+  .table-row:hover {
+    background: rgba(99, 102, 241, 0.05);
+  }
+
+  .table-row:last-child {
+    border-bottom: none;
+  }
+
+  /* ============================================
+     SPINNER
+     ============================================ */
+  .spinner-ring {
+    width: 24px;
+    height: 24px;
+    border: 3px solid rgba(99, 102, 241, 0.2);
+    border-top-color: #818cf8;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  .spinner-ring-sm {
+    width: 16px;
+    height: 16px;
+    border-width: 2px;
+  }
+
+  .spinner-ring-lg {
+    width: 40px;
+    height: 40px;
+    border-width: 4px;
+  }
+
+  /* ============================================
+     BADGE / TAG
+     ============================================ */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 9999px;
+    letter-spacing: 0.025em;
+  }
+
+  .badge-brand {
+    background: rgba(99, 102, 241, 0.15);
+    color: #a5b4fc;
+    border: 1px solid rgba(99, 102, 241, 0.2);
+  }
+
+  .badge-success {
+    background: rgba(34, 197, 94, 0.15);
+    color: #86efac;
+    border: 1px solid rgba(34, 197, 94, 0.2);
+  }
+}
+
+/* ============================================
+   UTILITY ANIMATIONS
+   ============================================ */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.animate-delay-100 { animation-delay: 0.1s; }
+.animate-delay-200 { animation-delay: 0.2s; }
+.animate-delay-300 { animation-delay: 0.3s; }
+.animate-delay-400 { animation-delay: 0.4s; }

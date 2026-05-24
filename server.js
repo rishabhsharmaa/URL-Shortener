@@ -1,8 +1,8 @@
+import './config/env.js'; // ← FIRST LINE
 import express from 'express';
 import cors from 'cors';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import dotenv from 'dotenv';
 import connectDB from './config/db.js';
 import authRoutes from './routes/auth.js';
 import urlRoutes from './routes/urls.js';
@@ -10,14 +10,13 @@ import linksRoutes from './routes/links.js';
 import errorMiddleware from './middleware/errorMiddleware.js';
 import Url from './models/Url.js';
 
-dotenv.config();
+// remove dotenv.config() from here
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const app = express();
 
-// Connect to database
 connectDB();
 
 // Middleware
@@ -35,7 +34,7 @@ app.use('/api/links', linksRoutes);
 app.get('/:shortCode', async (req, res, next) => {
   try {
     const { shortCode } = req.params;
-    
+
     // Ignore API calls and asset requests
     if (shortCode === 'api' || shortCode === 'favicon.ico') {
       return next();
@@ -77,10 +76,3 @@ if (process.env.VERCEL !== '1') {
 
 export default app;
 
-
-
-// Only listen on a port if running locally (not on Vercel)
-if (process.env.NODE_ENV !== 'production') {
-  const PORT = process.env.PORT || 5000;
-  app.listen(PORT, () => console.log(`Server is running locally on port ${PORT}`));
-}
