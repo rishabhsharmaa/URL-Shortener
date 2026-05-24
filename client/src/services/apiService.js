@@ -1,7 +1,7 @@
 import axios from 'axios';
 import API_BASE_URL from './config';
 // then change the post call to:
-const response = await axios.post(`${API_BASE_URL}/api/shorten`, { longUrl }, config);
+
 /**
  * @desc    Sends a long URL to the backend API to be shortened.
  * @param   {string} longUrl The URL that the user wants to shorten.
