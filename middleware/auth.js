@@ -1,11 +1,6 @@
 import jwt from 'jsonwebtoken';
 
-/**
- * @desc Middleware to verify JWT from the client
- * @usage Attach decoded user data to req.user if valid
- */
 const auth = (req, res, next) => {
-  // Support token in either custom header 'x-auth-token' or standard 'Authorization: Bearer <token>'
   let token = req.header('x-auth-token');
 
   if (!token) {
@@ -15,7 +10,6 @@ const auth = (req, res, next) => {
     }
   }
 
-  // If still no token, return 401 (routes should require auth)
   if (!token) {
     return res.status(401).json({
       success: false,
@@ -24,13 +18,8 @@ const auth = (req, res, next) => {
   }
 
   try {
-    // Verifying token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-    // attaching user to request
     req.user = decoded.user;
-
-    // Continue to next middleware
     next();
   } catch (err) {
     console.error('Invalid token', err.message);
@@ -42,3 +31,4 @@ const auth = (req, res, next) => {
 };
 
 export { auth };
+export default auth; // ← add this
